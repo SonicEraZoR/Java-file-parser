@@ -8,7 +8,22 @@ class FileParser
 	{
 		if (args.length == 0)
 		{
-            System.out.println("Usage: TODO");
+			System.out.println("Usage: FileParser [OPTION]... [FILE]...");
+			System.out.println("");
+			System.out.println("-p,");
+			System.out.println("prefix for the output file");
+			System.out.println("");
+			System.out.println("-o,");
+			System.out.println("output path");
+			System.out.println("");
+			System.out.println("-a,");
+			System.out.println("enable append mode");
+			System.out.println("");
+			System.out.println("-s,");
+			System.out.println("enable short statistics");
+			System.out.println("");
+			System.out.println("-f,");
+			System.out.println("enable full statistics");
         }
 		
 		String prefix = "";
