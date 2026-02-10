@@ -157,10 +157,59 @@ class FileParser
 			added_integer = false;
 		}
 		
-		System.out.println("---------------------------");
-		System.out.println("strings=" + strings);
-		System.out.println("integers=" + integers);
-		System.out.println("floats=" + floats);
-		System.out.println("---------------------------");
+		if (DEBUG_BUILD)
+		{
+			System.out.println("---------------------------");
+			System.out.println("strings=" + strings);
+			System.out.println("integers=" + integers);
+			System.out.println("floats=" + floats);
+			System.out.println("---------------------------");
+		}
+		
+		if (!strings.isEmpty())
+		{
+			try (FileWriter myWriter = new FileWriter(prefix + "strings.txt", append))
+			{
+				for (String string : strings)
+				{
+					myWriter.write(string + "\n");
+				}
+			}
+			catch (IOException e)
+			{
+				System.out.println("Error writing to a file");
+				e.printStackTrace();
+			}
+		}
+		if (!integers.isEmpty())
+		{
+			try (FileWriter myWriter = new FileWriter(prefix + "integers.txt", append))
+			{
+				for (String integer : integers)
+				{
+					myWriter.write(integer + "\n");
+				}
+			}
+			catch (IOException e)
+			{
+				System.out.println("Error writing to a file");
+				e.printStackTrace();
+			}
+		}
+		if (!floats.isEmpty())
+		{
+			try (FileWriter myWriter = new FileWriter(prefix + "floats.txt", append))
+			{
+				for (String _float : floats)
+				{
+					myWriter.write(_float + "\n");
+				}
+			}
+			catch (IOException e)
+			{
+				System.out.println("Error writing to a file");
+				e.printStackTrace();
+			}
+		}
 	}
 }
