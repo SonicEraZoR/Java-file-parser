@@ -92,6 +92,7 @@ class FileParser
 		}
 		
 		List<File> in_files_obj = new ArrayList<>();
+		
 		for (String in_file : in_files)
 		{
 			in_files_obj.add(new File(in_file));
@@ -131,38 +132,13 @@ class FileParser
 		String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
 		String[] decimal_separators = {".", ","};
 		
-		boolean added_float = false;
-		boolean added_integer = false;
-		
 		for (String line : in_lines)
 		{
-			for (String decimal_separator : decimal_separators)
-			{
-				if (line.indexOf(decimal_separator) != -1)
-				{
-					floats.add(line);
-					added_float = true;
-					break;
-				}
-			}
-			if (!added_float)
-			{
-				for (String number : numbers)
-				{
-					if (line.indexOf(number) != -1)
-					{
-						integers.add(line);
-						added_integer = true;
-						break;
-					}
-				}
-			}
-			if (!added_float && !added_integer)
-			{
-				strings.add(line);
-			}
-			added_float = false;
-			added_integer = false;
+			if (findSubstring(decimal_separators, floats, line))
+				continue;
+			else if (findSubstring(numbers, integers, line))
+				continue;
+			strings.add(line);
 		}
 		
 		if (DEBUG_BUILD)
@@ -174,9 +150,16 @@ class FileParser
 			System.out.println("---------------------------");
 		}
 		
+		writeOutputFile(strings, prefix, "strings.txt", append);
+		writeOutputFile(integers, prefix, "integers.txt", append);
+		writeOutputFile(floats, prefix, "floats.txt", append);
+	}
+	
+	static int writeOutputFile(List<String> strings, String prefix, String file_name, boolean append)
+	{
 		if (!strings.isEmpty())
 		{
-			try (FileWriter myWriter = new FileWriter(prefix + "strings.txt", append))
+			try (FileWriter myWriter = new FileWriter(prefix + file_name, append))
 			{
 				for (String string : strings)
 				{
@@ -187,37 +170,22 @@ class FileParser
 			{
 				System.out.println("Error writing to a file");
 				e.printStackTrace();
+				return 1;
 			}
 		}
-		if (!integers.isEmpty())
+		return 0;
+	}
+	
+	static boolean findSubstring(String[] substr_arr, List<String> res_list, String input_line)
+	{
+		for (String substr : substr_arr)
 		{
-			try (FileWriter myWriter = new FileWriter(prefix + "integers.txt", append))
+			if (input_line.indexOf(substr) != -1)
 			{
-				for (String integer : integers)
-				{
-					myWriter.write(integer + "\n");
-				}
-			}
-			catch (IOException e)
-			{
-				System.out.println("Error writing to a file");
-				e.printStackTrace();
+				res_list.add(input_line);
+				return true;
 			}
 		}
-		if (!floats.isEmpty())
-		{
-			try (FileWriter myWriter = new FileWriter(prefix + "floats.txt", append))
-			{
-				for (String _float : floats)
-				{
-					myWriter.write(_float + "\n");
-				}
-			}
-			catch (IOException e)
-			{
-				System.out.println("Error writing to a file");
-				e.printStackTrace();
-			}
-		}
+		return false;
 	}
 }
