@@ -73,6 +73,12 @@ class FileParser
 			in_files.add(args[i]);
 		}
 		
+		if (in_files.isEmpty())
+		{
+			System.out.println("No input files were given, can't continue");
+			return;
+		}
+		
 		if (DEBUG_BUILD)
 		{
 			System.out.println("---------------------------");
