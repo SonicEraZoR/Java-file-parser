@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileNotFoundException;
+import java.util.Collections;
+import java.util.Comparator;
 
 class FileParser
 {
@@ -150,12 +152,12 @@ class FileParser
 			System.out.println("---------------------------");
 		}
 		
-		writeOutputFile(strings, prefix, "strings.txt", append, out_path);
-		writeOutputFile(integers, prefix, "integers.txt", append, out_path);
-		writeOutputFile(floats, prefix, "floats.txt", append, out_path);
+		writeOutputFile(strings, out_path, prefix, "strings.txt", append, short_stats, full_stats, false);
+		writeOutputFile(integers, out_path, prefix, "integers.txt", append, short_stats, full_stats, true);
+		writeOutputFile(floats, out_path, prefix, "floats.txt", append, short_stats, full_stats, true);
 	}
 	
-	static int writeOutputFile(List<String> strings, String prefix, String file_name, boolean append, String out_path)
+	static int writeOutputFile(List<String> strings, String out_path, String prefix, String file_name,  boolean append, boolean short_stats, boolean full_stats, boolean number)
 	{
 		if (!strings.isEmpty())
 		{
@@ -166,6 +168,20 @@ class FileParser
 				{
 					myWriter.write(string + "\n");
 				}
+				if (full_stats && !number)
+				{
+					short_stats = false;
+					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
+					System.out.println("Shortest string length: " + Collections.min(strings, Comparator.comparing(String::length)).length());
+					System.out.println("Longest string length: " + Collections.max(strings, Comparator.comparing(String::length)).length());
+				}
+				if (full_stats && number)
+				{
+					short_stats = false;
+					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
+				}
+				if (short_stats)
+					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
 			}
 			catch (IOException e)
 			{
