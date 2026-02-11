@@ -14,22 +14,24 @@ class FileParser
 	{
 		if (args.length == 0)
 		{
-			System.out.println("Usage: FileParser [OPTION]... [FILE]...");
-			System.out.println("");
-			System.out.println("-p,");
-			System.out.println("prefix for the output file");
-			System.out.println("");
-			System.out.println("-o,");
-			System.out.println("output path");
-			System.out.println("");
-			System.out.println("-a,");
-			System.out.println("enable append mode");
-			System.out.println("");
-			System.out.println("-s,");
-			System.out.println("enable short statistics");
-			System.out.println("");
-			System.out.println("-f,");
-			System.out.println("enable full statistics");
+			System.out.println("""
+			Usage: FileParser [OPTION]... [FILE]...
+			
+			-p,
+			prefix for the output file
+			
+			-o,
+			output path
+			
+			-a,
+			enable append mode
+			
+			-s,
+			enable short statistics
+			
+			-f,
+			enable full statistics""");
+			return;
         }
 		
 		String prefix = "";
