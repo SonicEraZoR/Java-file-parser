@@ -35,7 +35,7 @@ class FileParser
         }
 		
 		String prefix = "";
-		String out_path = "";
+		String out_path = ".";
 		boolean append = false;
 		boolean short_stats = false;
 		boolean full_stats = false;
@@ -150,16 +150,17 @@ class FileParser
 			System.out.println("---------------------------");
 		}
 		
-		writeOutputFile(strings, prefix, "strings.txt", append);
-		writeOutputFile(integers, prefix, "integers.txt", append);
-		writeOutputFile(floats, prefix, "floats.txt", append);
+		writeOutputFile(strings, prefix, "strings.txt", append, out_path);
+		writeOutputFile(integers, prefix, "integers.txt", append, out_path);
+		writeOutputFile(floats, prefix, "floats.txt", append, out_path);
 	}
 	
-	static int writeOutputFile(List<String> strings, String prefix, String file_name, boolean append)
+	static int writeOutputFile(List<String> strings, String prefix, String file_name, boolean append, String out_path)
 	{
 		if (!strings.isEmpty())
 		{
-			try (FileWriter myWriter = new FileWriter(prefix + file_name, append))
+			File out_file = new File(new File(out_path), prefix + file_name);
+			try (FileWriter myWriter = new FileWriter(out_file, append))
 			{
 				for (String string : strings)
 				{
