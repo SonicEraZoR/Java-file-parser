@@ -215,7 +215,7 @@ class FileParser
 					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
 					System.out.println("Min number: " + Collections.min(ints));
 					System.out.println("Max number: " + Collections.max(ints));
-					System.out.println("Sum: " + ints.stream().mapToLong(Long::intValue).sum());
+					System.out.println("Sum: " + sumIntsList(ints));
 					OptionalDouble average = ints.stream().mapToDouble(a -> a).average();
 					System.out.println("Average: " + (average.isPresent() ? average.getAsDouble() : "ERROR: Not able to calculate average"));
 				}
@@ -225,7 +225,7 @@ class FileParser
 					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
 					System.out.println("Min number: " + Collections.min(floats));
 					System.out.println("Max number: " + Collections.max(floats));
-					System.out.println("Sum: " + floats.stream().mapToDouble(Double::floatValue).sum());
+					System.out.println("Sum: " + sumFloatsList(floats));
 					OptionalDouble average = floats.stream().mapToDouble(a -> a).average();
 					System.out.println("Average: " + (average.isPresent() ? average.getAsDouble() : "ERROR: Not able to calculate average"));
 				}
@@ -327,6 +327,26 @@ class FileParser
 				return true;
 		}
 		return false;
+	}
+	
+	static Long sumIntsList(List<Long> ints)
+	{
+		Long res = (long)0;
+		for (Long _int : ints)
+		{
+			res += _int;
+		}
+		return res;
+	}
+	
+	static Double sumFloatsList(List<Double> floats)
+	{
+		Double res = 0.0;
+		for (Double _float : floats)
+		{
+			res += _float;
+		}
+		return res;
 	}
 	
 	static enum DataTypes 
