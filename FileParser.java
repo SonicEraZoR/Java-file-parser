@@ -15,7 +15,7 @@ import java.text.DecimalFormatSymbols;
 
 class FileParser
 {
-	static final boolean DEBUG_BUILD = true;
+	static final boolean DEBUG_BUILD = false;
 	
 	public static void main(String[] args)
 	{
