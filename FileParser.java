@@ -119,7 +119,7 @@ class FileParser
 			}
 			catch (FileNotFoundException e)
 			{
-				System.out.println("Error reading input files.");
+				System.out.println("ERROR: Error reading input files.");
 				e.printStackTrace();
 			}
 		}
@@ -182,11 +182,11 @@ class FileParser
 					writeFullStats(datatype, strings, prefix, file_name);
 				}
 				if (short_stats)
-					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
+					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name + "\n");
 			}
 			catch (IOException e)
 			{
-				System.out.println("Error writing to a file");
+				System.out.println("ERROR: Error writing to a file");
 				e.printStackTrace();
 				return 1;
 			}
@@ -202,6 +202,7 @@ class FileParser
 				System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
 				System.out.println("Shortest string length: " + Collections.min(strings, Comparator.comparing(String::length)).length());
 				System.out.println("Longest string length: " + Collections.max(strings, Comparator.comparing(String::length)).length());
+				System.out.println("");
 				break;
 			case DataTypes.integer:
 			{
@@ -224,6 +225,7 @@ class FileParser
 				System.out.println("Sum: " + sumIntsList(ints));
 				OptionalDouble average = ints.stream().mapToDouble(a -> a).average();
 				System.out.println("Average: " + (average.isPresent() ? average.getAsDouble() : "ERROR: Not able to calculate average"));
+				System.out.println("");
 				break;
 			}
 			case DataTypes._float:
@@ -247,6 +249,7 @@ class FileParser
 				System.out.println("Sum: " + sumFloatsList(floats));
 				OptionalDouble average = floats.stream().mapToDouble(a -> a).average();
 				System.out.println("Average: " + (average.isPresent() ? average.getAsDouble() : "ERROR: Not able to calculate average"));
+				System.out.println("");
 				break;
 			}
 		}
