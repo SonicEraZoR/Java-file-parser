@@ -11,6 +11,7 @@ import java.lang.Long;
 import java.lang.Float;
 import java.lang.NumberFormatException;
 import java.util.OptionalDouble;
+import java.text.DecimalFormatSymbols;
 
 class FileParser
 {
@@ -135,15 +136,18 @@ class FileParser
 		List<String> integers = new ArrayList<>();
 		List<String> floats = new ArrayList<>();
 		
-		String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-		String[] decimal_separators = {".", ","};
-		
 		for (String line : in_lines)
 		{
-			if (findSubstring(decimal_separators, floats, line))
+			if (isStringInteger(line))
+			{
+				integers.add(line);
 				continue;
-			else if (findSubstring(numbers, integers, line))
+			}
+			else if (isStringFloat(line))
+			{
+				floats.add(line);
 				continue;
+			}
 			strings.add(line);
 		}
 		
@@ -181,7 +185,7 @@ class FileParser
 						catch (NumberFormatException e)
 						{
 							System.out.println("ERROR: Couldn't convert string to a number: " + string);
-							System.out.println("ERROR: Numbers statistics will be incorrect");
+							System.out.println("ERROR: Numbers statistics for integers will be incorrect");
 						}
 					}
 					if (full_stats && (datatype == DataTypes._float))
@@ -193,7 +197,7 @@ class FileParser
 						catch (NumberFormatException e)
 						{
 							System.out.println("ERROR: Couldn't convert string to a number: " + string);
-							System.out.println("ERROR: Numbers statistics will be incorrect");
+							System.out.println("ERROR: Numbers statistics for floats will be incorrect");
 						}
 					}
 					myWriter.write(string + "\n");
@@ -238,15 +242,89 @@ class FileParser
 		return 0;
 	}
 	
-	static boolean findSubstring(String[] substr_arr, List<String> res_list, String input_line)
+	static boolean isStringInteger(String str)
 	{
-		for (String substr : substr_arr)
+		DecimalFormatSymbols currentLocaleSymbols = DecimalFormatSymbols.getInstance();
+		char localeMinusSign = currentLocaleSymbols.getMinusSign();
+
+		if ( !Character.isDigit(str.charAt(0)) && str.charAt(0) != localeMinusSign )
+			return false;
+		
+		for (char c : str.substring(1).toCharArray())
 		{
-			if (input_line.indexOf(substr) != -1)
+			if (!Character.isDigit(c))
+				return false;
+		}
+		return true;
+	}
+	
+	static boolean isStringFloat(String str)
+	{
+		DecimalFormatSymbols currentLocaleSymbols = DecimalFormatSymbols.getInstance();
+		char localeMinusSign = currentLocaleSymbols.getMinusSign();
+
+		if (!Character.isDigit(str.charAt(0)) && str.charAt(0) != localeMinusSign)
+			return false;
+		
+		boolean isDecimalSeparatorFound = false;
+		boolean isExponentSeparatorFound = false;
+		
+		for (int i = 0; i < str.substring(1).length(); i++)
+		{
+			if (!Character.isDigit(str.substring(1).charAt(i)))
 			{
-				res_list.add(input_line);
-				return true;
+				if (isDecimalSeparator(str.substring(1).charAt(i)) && !isDecimalSeparatorFound)
+				{
+					isDecimalSeparatorFound = true;
+					continue;
+				}
+				if (isExponentSeparator(str.substring(1).charAt(i)) && !isExponentSeparatorFound)
+				{
+					if (!Character.isDigit(str.substring(1).charAt(i+1)) && !isExponentSeparator2(str.substring(1).charAt(i+1)))
+						return false;
+					else
+						i++;
+					isExponentSeparatorFound = true;
+					continue;
+				}
+				return false;
 			}
+		}
+		if (!isDecimalSeparatorFound)
+			return false;
+		
+		return true;
+	}
+	
+	static boolean isDecimalSeparator(char c)
+	{
+		char[] DecimalSeparators = {'.', ','};
+		for (char DecimalSeparator : DecimalSeparators)
+		{
+			if (c == DecimalSeparator)
+				return true;
+		}
+		return false;
+	}
+	
+	static boolean isExponentSeparator(char c)
+	{
+		char[] ExponentSeparators = {'e', 'E'};
+		for (char ExponentSeparator : ExponentSeparators)
+		{
+			if (c == ExponentSeparator)
+				return true;
+		}
+		return false;
+	}
+	
+	static boolean isExponentSeparator2(char c)
+	{
+		char[] ExponentSeparators = {'+', '-'};
+		for (char ExponentSeparator : ExponentSeparators)
+		{
+			if (c == ExponentSeparator)
+				return true;
 		}
 		return false;
 	}
