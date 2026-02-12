@@ -172,62 +172,14 @@ class FileParser
 			File out_file = new File(new File(out_path), prefix + file_name);
 			try (FileWriter myWriter = new FileWriter(out_file, append))
 			{
-				List<Long> ints = new ArrayList<>();
-				List<Double> floats = new ArrayList<>();
 				for (String string : strings)
 				{
-					if (full_stats && (datatype == DataTypes.integer))
-					{
-						try
-						{
-							ints.add(Long.parseLong(string));
-						}
-						catch (NumberFormatException e)
-						{
-							System.out.println("ERROR: Couldn't convert string to a number: " + string);
-							System.out.println("ERROR: Numbers statistics for integers will be incorrect");
-						}
-					}
-					if (full_stats && (datatype == DataTypes._float))
-					{
-						try
-						{
-							floats.add(Double.parseDouble(string));
-						}
-						catch (NumberFormatException e)
-						{
-							System.out.println("ERROR: Couldn't convert string to a number: " + string);
-							System.out.println("ERROR: Numbers statistics for floats will be incorrect");
-						}
-					}
 					myWriter.write(string + "\n");
 				}
-				if (full_stats && (datatype == DataTypes.string))
+				if (full_stats)
 				{
 					short_stats = false;
-					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
-					System.out.println("Shortest string length: " + Collections.min(strings, Comparator.comparing(String::length)).length());
-					System.out.println("Longest string length: " + Collections.max(strings, Comparator.comparing(String::length)).length());
-				}
-				if (full_stats && (datatype == DataTypes.integer))
-				{
-					short_stats = false;
-					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
-					System.out.println("Min number: " + Collections.min(ints));
-					System.out.println("Max number: " + Collections.max(ints));
-					System.out.println("Sum: " + sumIntsList(ints));
-					OptionalDouble average = ints.stream().mapToDouble(a -> a).average();
-					System.out.println("Average: " + (average.isPresent() ? average.getAsDouble() : "ERROR: Not able to calculate average"));
-				}
-				if (full_stats && (datatype == DataTypes._float))
-				{
-					short_stats = false;
-					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
-					System.out.println("Min number: " + Collections.min(floats));
-					System.out.println("Max number: " + Collections.max(floats));
-					System.out.println("Sum: " + sumFloatsList(floats));
-					OptionalDouble average = floats.stream().mapToDouble(a -> a).average();
-					System.out.println("Average: " + (average.isPresent() ? average.getAsDouble() : "ERROR: Not able to calculate average"));
+					writeFullStats(datatype, strings, prefix, file_name);
 				}
 				if (short_stats)
 					System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
@@ -237,6 +189,65 @@ class FileParser
 				System.out.println("Error writing to a file");
 				e.printStackTrace();
 				return 1;
+			}
+		}
+		return 0;
+	}
+	
+	static int writeFullStats(DataTypes datatype, List<String> strings, String prefix, String file_name)
+	{
+		switch (datatype)
+		{
+			case DataTypes.string:
+				System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
+				System.out.println("Shortest string length: " + Collections.min(strings, Comparator.comparing(String::length)).length());
+				System.out.println("Longest string length: " + Collections.max(strings, Comparator.comparing(String::length)).length());
+				break;
+			case DataTypes.integer:
+			{
+				List<Long> ints = new ArrayList<>();
+				for (String string : strings)
+				{
+					try
+					{
+						ints.add(Long.parseLong(string));
+					}
+					catch (NumberFormatException e)
+					{
+						System.out.println("ERROR: Couldn't convert string to a number: " + string);
+						System.out.println("ERROR: Numbers statistics for integers will be incorrect");
+					}
+				}
+				System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
+				System.out.println("Min number: " + Collections.min(ints));
+				System.out.println("Max number: " + Collections.max(ints));
+				System.out.println("Sum: " + sumIntsList(ints));
+				OptionalDouble average = ints.stream().mapToDouble(a -> a).average();
+				System.out.println("Average: " + (average.isPresent() ? average.getAsDouble() : "ERROR: Not able to calculate average"));
+				break;
+			}
+			case DataTypes._float:
+			{
+				List<Double> floats = new ArrayList<>();
+				for (String string : strings)
+				{
+					try
+					{
+						floats.add(Double.parseDouble(string));
+					}
+					catch (NumberFormatException e)
+					{
+						System.out.println("ERROR: Couldn't convert string to a number: " + string);
+						System.out.println("ERROR: Numbers statistics for floats will be incorrect");
+					}
+				}
+				System.out.println("Wrote " + strings.size() + " lines to " + prefix + file_name);
+				System.out.println("Min number: " + Collections.min(floats));
+				System.out.println("Max number: " + Collections.max(floats));
+				System.out.println("Sum: " + sumFloatsList(floats));
+				OptionalDouble average = floats.stream().mapToDouble(a -> a).average();
+				System.out.println("Average: " + (average.isPresent() ? average.getAsDouble() : "ERROR: Not able to calculate average"));
+				break;
 			}
 		}
 		return 0;
