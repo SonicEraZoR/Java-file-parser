@@ -258,6 +258,9 @@ class FileParser
 	
 	static boolean isStringInteger(String str)
 	{
+		if (str.isEmpty())
+			return false;
+		
 		DecimalFormatSymbols currentLocaleSymbols = DecimalFormatSymbols.getInstance();
 		char localeMinusSign = currentLocaleSymbols.getMinusSign();
 
@@ -274,6 +277,9 @@ class FileParser
 	
 	static boolean isStringFloat(String str)
 	{
+		if (str.isEmpty())
+			return false;
+		
 		DecimalFormatSymbols currentLocaleSymbols = DecimalFormatSymbols.getInstance();
 		char localeMinusSign = currentLocaleSymbols.getMinusSign();
 
